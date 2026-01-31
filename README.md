@@ -15,7 +15,7 @@ DEVICE=/dev/ttyUSB0
 Clone Micropython repo:
 
 ```
-git clone https://github.com/micropython/micropython
+git clone --recurse-submodules https://github.com/micropython/micropython
 ```
 
 Activate Zephyr environment and compile:
@@ -26,11 +26,10 @@ source ~/zephyrproject/.venv/bin/activate
 ```
 
 
-For further work, just move to the build directory:
+For flashing the board:
 
 ```
-cd ~/zephyrproject/evernode-micropython/
-west flash
+./flash.sh
 ```
 
 To copy the radio driver to the Evernode:
