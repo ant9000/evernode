@@ -12,4 +12,4 @@ which west || {
 cd $(dirname $(which west))
 cd $(west topdir)
 
-west flash -d $TARGET
+west flash -d $TARGET $*
