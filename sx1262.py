@@ -419,7 +419,7 @@ if  __name__ == "__main__":
 
     lora = SX1262(pinset=pinset,rx_callback=onrx)
     lora.begin() # Initialize the chip.
-    lora.configure(869500000, 250000, 8, 12, 22) # Set our configuration.
+    lora.configure(869.5, 250000, 8, 12, 22) # Set our configuration.
     lora.receive() # Enter RX mode.
     lora.show_status() # Show the current device mode.
 
