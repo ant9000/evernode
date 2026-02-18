@@ -15,12 +15,13 @@ def onrx(lora_instance,packet,rssi,bad_crc):
 
 lora = SX1262(pinset=pinset,rx_callback=onrx)
 lora.begin()
-lora.configure(868.3, 125000, 5, 7, 14)
+lora.reset()
+lora.configure(868300000, 125000, 5, 11, 14)
 lora.receive()
 lora.show_status()
 payload=bytearray(b'Hello from Apollo3!')
 while True:
     lora.send(payload)
+    lora.show_status()
     lora.receive()
-    print(".", end="")
     time.sleep(5)

@@ -162,10 +162,10 @@ class SX1262:
         payload[1:] = data
         self.command(WriteBufferCmd,payload)
 
-    def set_frequency(self, mhz):
+    def set_frequency(self, freq_hz):
         # The final frequency is (rf_freq * xtal freq) / 2^25.
         oscfreq = 32000000 # Oscillator frequency for registers calculation
-        rf_freq = int(mhz * (2**25) / oscfreq)
+        rf_freq = int(freq_hz * (2**25) / oscfreq)
         arg = [(rf_freq & 0xff000000) >> 24,
                (rf_freq & 0xff0000) >> 16,
                (rf_freq & 0xff00) >> 8,
@@ -196,7 +196,7 @@ class SX1262:
     # Set the radio parameters. Allowed spreadings are from 6 to 12.
     # Bandwidth and coding rate are listeed below in the dictionaries.
     # TX power is from -9 to +22 dbm.
-    def configure(self, freq, bandwidth, rate, spreading, txpower):
+    def configure(self, freq_hz, bandwidth, rate, spreading, txpower):
         Bw = {   7800: 0,
                 10400: 0x8,
                 15600: 0x1,
@@ -228,7 +228,7 @@ class SX1262:
         self.set_packet_params()
 
         # Set RF frequency.
-        self.set_frequency(freq)
+        self.set_frequency(freq_hz)
 
         # Use maximum sensibility
         self.writereg(RegRxGain,0x96)
@@ -282,11 +282,12 @@ class SX1262:
         self.writereg(RegLoRaSyncWordLSB,0x24)
 
         # Calibrate for the specific selected frequency
-        if 430 <= freq <= 440: f1,f2 = 0x6b,0x6f
-        elif 470 <= freq <= 510: f1,f2 = 0x75,0x81
-        elif 779 <= freq <= 787: f1,f2 = 0xc1,0xc5
-        elif 863 <= freq <= 870: f1,f2 = 0xd7,0xdb
-        elif 902 <= freq <= 928: f1,f2 = 0xe1,0xe9
+        freq_mhz = freq_hz / 1000000
+        if 430 <= freq_mhz <= 440: f1,f2 = 0x6b,0x6f
+        elif 470 <= freq_mhz <= 510: f1,f2 = 0x75,0x81
+        elif 779 <= freq_mhz <= 787: f1,f2 = 0xc1,0xc5
+        elif 863 <= freq_mhz <= 870: f1,f2 = 0xd7,0xdb
+        elif 902 <= freq_mhz <= 928: f1,f2 = 0xe1,0xe9
         else: f1,f2 = None,None
 
         if f1 and f2:
@@ -419,7 +420,7 @@ if  __name__ == "__main__":
 
     lora = SX1262(pinset=pinset,rx_callback=onrx)
     lora.begin() # Initialize the chip.
-    lora.configure(869.5, 250000, 8, 12, 22) # Set our configuration.
+    lora.configure(869500000, 250000, 8, 12, 22) # Set our configuration.
     lora.receive() # Enter RX mode.
     lora.show_status() # Show the current device mode.
 
