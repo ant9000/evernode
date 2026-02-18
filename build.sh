@@ -12,11 +12,15 @@ which west || {
 cd $(dirname $(which west))
 cd $(west topdir)
 
+EXTRA_CFLAGS="-DMICROPY_CONFIG_ROM_LEVEL=MICROPY_CONFIG_ROM_LEVEL_EXTRA_FEATURES"
+EXTRA_CFLAGS="${EXTRA_CFLAGS} -DMICROPY_PY_MACHINE_BARE_METAL_FUNCS=1"
+
 west build -b apollo3_evb \
     -d $TARGET \
     $BASE/micropython/ports/zephyr/ \
     -DEXTRA_CONF_FILE=thread.conf \
     -DEXTRA_CONF_FILE=$BASE/evernode.conf \
     -DEXTRA_DTC_OVERLAY_FILE=$BASE/evernode.overlay \
-    -DEXTRA_CFLAGS=-DMICROPY_CONFIG_ROM_LEVEL=MICROPY_CONFIG_ROM_LEVEL_EXTRA_FEATURES \
+    -DEXTRA_ZEPHYR_MODULES=$BASE/evernode \
+    -DEXTRA_CFLAGS="$EXTRA_CFLAGS" \
     $*
