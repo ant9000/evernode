@@ -34,18 +34,27 @@ void mp_machine_set_freq(size_t n_args, const mp_obj_t *args) {
 }
 
 void mp_machine_lightsleep(size_t n_args, const mp_obj_t *args) {
+//  NVIC_DisableIRQ(UART0_IRQn);
+    NVIC_DisableIRQ(STIMER_CMPR0_IRQn);
+    NVIC_DisableIRQ(STIMER_CMPR1_IRQn);
+    // configure powerdown / retain
     am_hal_pwrctrl_memory_deepsleep_powerdown(AM_HAL_PWRCTRL_MEM_CACHE);
     am_hal_pwrctrl_memory_deepsleep_powerdown(AM_HAL_PWRCTRL_MEM_FLASH_MAX);
     am_hal_pwrctrl_memory_deepsleep_powerdown(AM_HAL_PWRCTRL_MEM_SRAM_MAX);
     am_hal_pwrctrl_memory_deepsleep_retain(AM_HAL_PWRCTRL_MEM_SRAM_MAX);
+    // deep sleep
     am_hal_sysctrl_sleep(AM_HAL_SYSCTRL_SLEEP_DEEP);
+    // restore interrupts
+//  NVIC_EnableIRQ(UART0_IRQn);
+    NVIC_EnableIRQ(STIMER_CMPR0_IRQn);
+    NVIC_EnableIRQ(STIMER_CMPR1_IRQn);
 }
 
-void mp_machine_deepsleep(size_t n_args, const mp_obj_t *args) {
-    am_hal_pwrctrl_memory_deepsleep_powerdown(AM_HAL_PWRCTRL_MEM_CACHE);
-    am_hal_pwrctrl_memory_deepsleep_powerdown(AM_HAL_PWRCTRL_MEM_FLASH_MAX);
-    am_hal_pwrctrl_memory_deepsleep_powerdown(AM_HAL_PWRCTRL_MEM_SRAM_MAX);
-    am_hal_sysctrl_sleep(AM_HAL_SYSCTRL_SLEEP_DEEP);
+MP_NORETURN void mp_machine_deepsleep(size_t n_args, const mp_obj_t *args) {
+    mp_raise_NotImplementedError(MP_ERROR_TEXT("machine.deepsleep not implemented"));
+    for(;;){
+        // no return
+    }
 }
 
 #endif // MICROPY_PY_MACHINE_BARE_METAL_FUNCS
