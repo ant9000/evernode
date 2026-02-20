@@ -15,7 +15,7 @@ DEVICE=/dev/ttyUSB0
 Clone Micropython repo:
 
 ```
-git clone --recurse-submodules https://github.com/micropython/micropython
+git clone --recurse-submodules https://github.com/ant9000/micropython --branch=devel
 ```
 
 Activate Zephyr environment and compile:

@@ -1,5 +1,0 @@
-name: evernode
-
-build:
-    cmake: .
-    kconfig: Kconfig
