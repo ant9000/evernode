@@ -19,6 +19,7 @@
     };
 };
 
+/*
 &iom1 {
 	spi1: spi {
 		pinctrl-0 = <&spi1_default>;
@@ -31,6 +32,11 @@
 
 &i2c3 {
     status = "okay";
+};
+*/
+
+&bleif {
+    status = "disabled";
 };
 
 /delete-node/ &slot0_partition;
