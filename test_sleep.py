@@ -7,5 +7,5 @@ def touch(p):
 pin = machine.Pin(("gpio0_31", 27), Pin.IN)
 pin.irq(handler=touch, trigger=Pin.IRQ_RISING)
 print("Going to sleep...")
-lightsleep()
+lightsleep(30000)
 print("Now awake again!")
