@@ -19,21 +19,21 @@
     };
 };
 
-/*
-&iom1 {
-	spi1: spi {
-		pinctrl-0 = <&spi1_default>;
-		pinctrl-names = "default";
-		cs-gpios = <&gpio0_31 11 GPIO_ACTIVE_LOW>;
-		clock-frequency = <DT_FREQ_M(10)>;
-		status = "okay";
-	};
+&pinctrl {
+    uart0_sleep: uart0_sleep {
+        group1 {
+            pinmux = <UART0TX_P22>;
+        };
+        group2 {
+            pinmux = <UART0RX_P23>;
+        };
+    };
 };
 
-&i2c3 {
-    status = "okay";
+&uart0 {
+    pinctrl-1 = <&uart0_sleep>;
+    pinctrl-names = "default", "sleep";
 };
-*/
 
 &bleif {
     status = "disabled";
