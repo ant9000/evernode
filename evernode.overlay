@@ -20,6 +20,11 @@
 };
 
 &pinctrl {
+    i2c3_default: i2c3_default {
+        group1 {
+            /delete-property/ bias-pull-up;
+        };
+    };
     i2c3_sleep: i2c3_sleep {
         group1 {
             pinmux = <M3SCL_P42>, <M3SDAWIR3_P43>;
@@ -50,9 +55,9 @@
 };
 
 &gpio32_63 {
-  adc-hog {
+  line-hogs {
     gpio-hog;
-    gpios = <10 GPIO_ACTIVE_HIGH>;
+    gpios = <10 GPIO_ACTIVE_HIGH>, <15 GPIO_ACTIVE_HIGH>;
     output-low;
   };
 };
