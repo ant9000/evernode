@@ -20,24 +20,43 @@
 };
 
 &pinctrl {
-    uart0_sleep: uart0_sleep {
+    i2c3_sleep: i2c3_sleep {
         group1 {
-            pinmux = <UART0TX_P22>;
-        };
-        group2 {
-            pinmux = <UART0RX_P23>;
+            pinmux = <M3SCL_P42>, <M3SDAWIR3_P43>;
         };
     };
 };
 
-&uart0 {
-    pinctrl-1 = <&uart0_sleep>;
+&iom1 {
+    spi1: spi {
+        pinctrl-0 = <&spi1_default>;
+        pinctrl-names = "default";
+        cs-gpios = <&gpio0_31 11 GPIO_ACTIVE_LOW>;
+        clock-frequency = <DT_FREQ_M(10)>;
+//      status = "okay";
+        status = "disabled";
+    };
+};
+
+&i2c3 {
+    pinctrl-1 = <&i2c3_sleep>;
     pinctrl-names = "default", "sleep";
+//  status = "okay";
+    status = "disabled";
 };
 
 &bleif {
     status = "disabled";
 };
+
+&gpio32_63 {
+  adc-hog {
+    gpio-hog;
+    gpios = <10 GPIO_ACTIVE_HIGH>;
+    output-low;
+  };
+};
+
 
 /delete-node/ &slot0_partition;
 /delete-node/ &slot1_partition;
