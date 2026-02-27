@@ -22,4 +22,5 @@ west build -b apollo3_evb \
     --extra-conf $BASE/evernode.conf \
     --extra-dtc-overlay $BASE/evernode.overlay \
     -DEXTRA_CFLAGS="$EXTRA_CFLAGS" \
+    -DUSER_C_MODULES=${BASE}/modules/ \
     $*
