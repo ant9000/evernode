@@ -45,16 +45,14 @@
         pinctrl-names = "default";
         cs-gpios = <&gpio0_31 11 GPIO_ACTIVE_LOW>;
         clock-frequency = <DT_FREQ_M(10)>;
-//      status = "okay";
-        status = "disabled";
+        status = "okay";
     };
 };
 
 &i2c3 {
     pinctrl-1 = <&i2c3_sleep>;
     pinctrl-names = "default", "sleep";
-//  status = "okay";
-    status = "disabled";
+    status = "okay";
 };
 
 &bleif {
