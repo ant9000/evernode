@@ -2,7 +2,7 @@ from machine import Pin, I2C
 
 
 DEV = "i2c3"
-ADDR = 0x1d
+ADDR = 0x18
 
 def cvt(arr):
     v = arr[0] + (arr[1] << 8)
@@ -11,7 +11,7 @@ def cvt(arr):
     return v >> 6
 
 bus = I2C(DEV)
-bus.writeto_mem(ADDR, 0x20, bytearray(0x80))
+bus.writeto_mem(ADDR, 0x20, b'\x41')
 try:
     while True:
         buff = bus.readfrom_mem(ADDR, 0xa8, 6)
@@ -20,4 +20,4 @@ try:
 except KeyboardInterrupt:
     pass
 
-bus.writeto_mem(ADDR, 0x20, 0x00)
+bus.writeto_mem(ADDR, 0x20, b'\x00')
