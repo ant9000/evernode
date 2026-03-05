@@ -1,7 +1,7 @@
 from machine import I2C
 
 DEV = "i2c3"
-ADDR = 0x52
+ADDR = 0x69
 
 bus = I2C(DEV)
 for i in range(3):
