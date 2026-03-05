@@ -17,7 +17,7 @@ bus = I2C(DEV)
 bus.writeto_mem(ADDR, 0x20, b'\x41')
 try:
     while True:
-        buff = bus.readfrom_mem(ADDR, 0xa8, 6)
+        buff = bytearray([bus.readfrom_mem(ADDR, 0x28+i, 1) for i in range(6)])
         x, y, z = [cvt(buff[i:i+2], BITS, SCALE) for i in range(0,6,2)]
         print(f'({x:8.3f}, {y:8.3f}, {z:8.3f}) g')
 except KeyboardInterrupt:
