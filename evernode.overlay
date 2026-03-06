@@ -27,11 +27,6 @@
 };
 
 &pinctrl {
-    i2c3_default: i2c3_default {
-        group1 {
-            /delete-property/ bias-pull-up;
-        };
-    };
     i2c3_sleep: i2c3_sleep {
         group1 {
             pinmux = <M3SCL_P42>, <M3SDAWIR3_P43>;
