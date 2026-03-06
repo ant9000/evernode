@@ -71,7 +71,7 @@ static mp_obj_t zephyr_pm_pm_is_busy(mp_obj_t name) {
     busy = pm_device_is_busy(dev);
     return mp_obj_new_bool(busy);
 }
-static MP_DEFINE_CONST_FUN_OBJ_1(zephyr_pm_pm_is_busy_obj, zephyr_pm_pm_busy_clear);
+static MP_DEFINE_CONST_FUN_OBJ_1(zephyr_pm_pm_is_busy_obj, zephyr_pm_pm_is_busy);
 
 static const mp_rom_map_elem_t zephyr_pm_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_zephyr_pm) },
