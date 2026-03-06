@@ -12,4 +12,4 @@ for i in range(3):
 print("Sleep, now!")
 
 bus.writeto_mem(ADDR, 0x12, b'\xe3')
-bus.writeto_mem(ADDR, 0x12, b'\x80')
+bus.writeto_mem(ADDR, 0x17, b'\x80')
