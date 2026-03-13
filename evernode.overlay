@@ -38,7 +38,6 @@
     spi1: spi {
         pinctrl-0 = <&spi1_default>;
         pinctrl-names = "default";
-        cs-gpios = <&gpio0_31 11 GPIO_ACTIVE_LOW>;
         clock-frequency = <DT_FREQ_M(10)>;
         status = "okay";
     };
@@ -48,6 +47,13 @@
     pinctrl-1 = <&i2c3_sleep>;
     pinctrl-names = "default", "sleep";
     status = "okay";
+    lis2dw12: lis2dw12@19 {
+        compatible = "st,lis2dw12";
+        reg = <0x19>;
+/* TODO
+        irq-gpios = <&gpio0_31 XXX GPIO_ACTIVE_HIGH>;
+*/
+    };
 };
 
 &bleif {
