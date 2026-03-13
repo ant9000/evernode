@@ -12,4 +12,10 @@ which west || {
 cd $(dirname $(which west))
 cd $(west topdir)
 
-west flash -d $TARGET $*
+cmd=$1
+if [ -z "$cmd" ]; then
+  exec west --help
+fi
+shift
+
+exec west $cmd -d $TARGET $*

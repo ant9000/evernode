@@ -2,21 +2,11 @@
 
 cd $(dirname $0)
 BASE=`pwd`
-TARGET=${BASE}/build
-
-which west || {
-  echo "West command not found - please activate Zephyr environment"
-  exit 1
-}
-
-cd $(dirname $(which west))
-cd $(west topdir)
 
 EXTRA_CFLAGS="-DMICROPY_CONFIG_ROM_LEVEL=MICROPY_CONFIG_ROM_LEVEL_EXTRA_FEATURES"
 EXTRA_CFLAGS="$EXTRA_CFLAGS -DMICROPY_PY_MACHINE_DISABLE_IRQ_ENABLE_IRQ=1"
 
-west build -b apollo3_evb \
-    -d $TARGET \
+exec ./west.sh build -b apollo3_evb \
     $BASE/micropython/ports/zephyr/ \
     --extra-conf thread.conf \
     --extra-conf $BASE/evernode.conf \

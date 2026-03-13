@@ -25,12 +25,26 @@ source ~/zephyrproject/.venv/bin/activate
 ./build.sh
 ```
 
-
-For flashing the board:
+The provided `west.sh` script is a thin wrapper for Zephyr `west` command, to simplify handling.
+For instance, to flash the board you can issue:
 
 ```
-./flash.sh
+./west.sh flash
 ```
+
+or maybe
+
+```
+./west.sh flash --no-rebuild --erase
+```
+
+Same goes for other `west` subcommands: to debug, use
+
+```
+./west.sh debug
+```
+
+etc.
 
 To copy the radio driver to the Evernode:
 ```
