@@ -92,3 +92,36 @@
     output-low;
   };
 };
+
+&mspi0_default {
+    group1 {
+        pinmux = <MSPI0_0_P22>,
+                 <MSPI0_1_P26>,
+                 <MSPI0_8_P24>;
+    };
+};
+
+&mspi0 {
+    pinctrl-0 = <&mspi0_default>;
+    pinctrl-names = "default";
+    clock-frequency = <DT_FREQ_M(8)>;
+    status = "okay";
+
+    mx25r64: mx25r6435f@0 {
+        compatible = "jedec,spi-nor";
+        status = "okay";
+        reg = <0>;
+        size = <DT_SIZE_M(64)>; /* 64 Mbits */
+        spi-max-frequency = <DT_FREQ_M(8)>;
+        jedec-id = [c2 28 17];
+        partitions {
+            compatible = "fixed-partitions";
+            #address-cells = <1>;
+            #size-cells = <1>;
+            external_partition: partition@0 {
+                label = "external";
+                reg = <0x00000000 DT_SIZE_M(8)>;
+            };
+        };
+    };
+};
