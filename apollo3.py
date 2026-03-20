@@ -48,6 +48,23 @@ REGISTERS["MCUCTRL"] = [
     (const(0x40020204), "DBGR2"           ), # Read-only debug register 2
     (const(0x40020220), "PMUENABLE"       ), # Control bit to enable/disable the PMU
     (const(0x40020250), "TPIUCTRL"        ), # TPIU Control Register. Determines the clock enable and frequency for the M4's TPIU interface.
+    (const(0x40020264), "OTAPOINTEROTA"   ), # (Over the Air) Update Pointer/Status. Reset only by POA
+    (const(0x40020280), "APBDMACTRLDMA"   ), # Control Register. Determines misc settings for DMA operation
+    (const(0x40020284), "SRAMMODESRAM"    ), # Controller mode bits
+    (const(0x40020348), "KEXTCLKSEL"      ), # Key Register to enable the use of external clock selects via the EXTCLKSEL reg
+    (const(0x40020350), "SIMOBUCK1"       ), # SIMO Buck Control Reg1
+    (const(0x40020354), "SIMOBUCK2"       ), # SIMO Buck Control Reg2
+    (const(0x40020358), "SIMOBUCK3"       ), # SIMO Buck Control Reg3
+    (const(0x4002035C), "SIMOBUCK4"       ), # SIMO Buck Control Reg1
+    (const(0x40020368), "BLEBUCK2"        ), # BLEBUCK2 Control Reg
+    (const(0x400203A0), "FLASHWPROT0"     ), # Flash Write Protection Bits
+    (const(0x400203A4), "FLASHWPROT1"     ), # Flash Write Protection Bits
+    (const(0x400203B0), "FLASHRPROT0"     ), # Flash Read Protection Bits
+    (const(0x400203B4), "FLASHRPROT1"     ), # Flash Read Protection Bits
+    (const(0x400203C0), "DMASRAMWRITEPROTECT0"), # SRAM write-protection bits.
+    (const(0x400203C4), "DMASRAMWRITEPROTECT1"), # SRAM write-protection bits.
+    (const(0x400203D0), "DMASRAMREADPROTECT0" ), # SRAM read-protection bits.
+    (const(0x400203D4), "DMASRAMREADPROTECT1" ), # SRAM read-protection bits.
 ]
 REGISTERS["CACHECTRL"] = [
 	(const(0x40018000), "CACHECFG"        ), # Flash Cache Control Register"
