@@ -109,7 +109,7 @@
 
     mx25r64: mx25r6435f@0 {
         compatible = "jedec,spi-nor";
-        status = "okay";
+        status = "disabled";
         reg = <0>;
         size = <DT_SIZE_M(64)>; /* 64 Mbits */
         spi-max-frequency = <DT_FREQ_M(8)>;
