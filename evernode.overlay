@@ -1,4 +1,8 @@
 / {
+    chosen {
+        zephyr,entropy = &rng_hci;
+    };
+
     aliases {
         i2c0 = &i2c3;
 		/delete-property/ led0;
@@ -27,6 +31,11 @@
 
     zephyr,user {
         io-channels = <&adc0 6>, <&adc0 7>;
+    };
+
+    rng_hci: entropy_bt_hci {
+        compatible = "zephyr,bt-hci-entropy";
+        status = "okay";
     };
 };
 
@@ -64,10 +73,6 @@
         irq-gpios = <&gpio0_31 XXX GPIO_ACTIVE_HIGH>;
 */
     };
-};
-
-&bleif {
-    status = "disabled";
 };
 
 /delete-node/ &slot0_partition;
