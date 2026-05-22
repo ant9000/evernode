@@ -1,0 +1,3 @@
+[submodule "modules/hydrogen-micropython"]
+	path = modules/hydrogen-micropython
+	url = https://github.com/peterzuger/hydrogen-micropython
