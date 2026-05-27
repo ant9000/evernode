@@ -163,3 +163,14 @@
         zephyr,resolution = <12>;
     };
 };
+
+&uart0_default {
+    group1 {
+        pinmux = <UART0TX_P39>;
+    };
+
+    group2 {
+        pinmux = <UART0RX_P40>;
+        input-enable;
+    };
+};
