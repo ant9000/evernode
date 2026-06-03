@@ -4,7 +4,7 @@
     };
 
     aliases {
-        i2c0 = &i2c3;
+        i2c0 = &i2c5;
 		/delete-property/ led0;
 		/delete-property/ led1;
 		/delete-property/ led2;
@@ -40,14 +40,14 @@
 };
 
 &pinctrl {
-    i2c3_sleep: i2c3_sleep {
+    i2c5_sleep: i2c5_sleep {
         group1 {
-            pinmux = <M3SCL_P42>, <M3SDAWIR3_P43>;
+            pinmux = <M5SCL_P48>, <M5SDAWIR3_P49>;
         };
     };
     adc0_default: adc0_default {
         group1 {
-            pinmux = <ADCSE6_P34>, <ADCSE7_P35>;
+            pinmux = <ADCSE6_P34>, <ADCSE7_P35>, <ADCD0PSE8_P13>;
             drive-strength = "0.1";
         };
     };
@@ -62,16 +62,15 @@
     };
 };
 
-&i2c3 {
-    pinctrl-1 = <&i2c3_sleep>;
-    pinctrl-names = "default", "sleep";
-    status = "okay";
-    lis2dw12: lis2dw12@19 {
-        compatible = "st,lis2dw12";
-        reg = <0x19>;
-/* TODO
-        irq-gpios = <&gpio0_31 XXX GPIO_ACTIVE_HIGH>;
-*/
+&iom5 {
+    i2c5: i2c {
+        pinctrl-0 = <&i2c5_default>;
+        pinctrl-1 = <&i2c5_sleep>;
+        pinctrl-names = "default", "sleep";
+        clock-frequency = <I2C_BITRATE_STANDARD>;
+        scl-gpios = <&gpio32_63 16 (GPIO_OPEN_DRAIN | GPIO_PULL_UP)>;
+        sda-gpios = <&gpio32_63 17 (GPIO_OPEN_DRAIN | GPIO_PULL_UP)>;
+        status = "okay";
     };
 };
 
@@ -157,6 +156,14 @@
     // ADCSE7: Vcap
     channel@7 {
         reg = <7>;
+        zephyr,gain = "ADC_GAIN_1";
+        zephyr,reference = "ADC_REF_INTERNAL";
+        zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+        zephyr,resolution = <12>;
+    };
+    //ADCD0PSE8_P13: Vbatt
+    channel@8 {
+        reg = <8>;
         zephyr,gain = "ADC_GAIN_1";
         zephyr,reference = "ADC_REF_INTERNAL";
         zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
