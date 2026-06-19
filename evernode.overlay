@@ -18,7 +18,7 @@
         compatible = "zephyr,fstab";
         lfs1: lfs1 {
             compatible = "zephyr,fstab,littlefs";
-            mount-point = "/";
+            mount-point = "/flash";
             automount;
             partition = <&storage_partition>;
             read-size = <1>;
