@@ -114,10 +114,10 @@
     status = "okay";
     ce-gpios = <&gpio0_31 19 GPIO_ACTIVE_LOW>;
 
-    mx25r64: nor-mspi-flash@0 {
+    ext_flash: nor-mspi-flash@0 {
         compatible = "jedec,nor-mspi", "jedec,nor";
         reg = <0>;
-        size = <DT_SIZE_M(64)>; /* 64 Mbits */
+        size = <DT_SIZE_M(8)>; /* in Mbits */
         status = "okay";
         mspi-max-frequency = <80000000>;
         mspi-io-mode = "MSPI_IO_MODE_QUAD";
