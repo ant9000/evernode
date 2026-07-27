@@ -111,16 +111,27 @@
     pinctrl-0 = <&mspi0_default>;
     pinctrl-names = "default";
     clock-frequency = <DT_FREQ_M(8)>;
-    status = "disabled";
+    status = "okay";
     ce-gpios = <&gpio0_31 19 GPIO_ACTIVE_LOW>;
 
-    mx25r64: qspi-nor-flash@0 {
-        compatible = "jedec,qspi-nor";
+    mx25r64: nor-mspi-flash@0 {
+        compatible = "jedec,nor-mspi", "jedec,nor";
         reg = <0>;
         size = <DT_SIZE_M(64)>; /* 64 Mbits */
-        qspi-max-frequency = <80000000>;
-        spi-bus-width = <4>;
         status = "okay";
+        mspi-max-frequency = <80000000>;
+        mspi-io-mode = "MSPI_IO_MODE_QUAD";
+
+        partitions {
+            compatible = "fixed-partitions";
+            #address-cells = <1>;
+            #size-cells = <1>;
+
+            store_partition: partition@0 {
+                label = "store";
+                reg = <0x00000000 DT_SIZE_M(8)>;
+            };
+        };
     };
 };
 
