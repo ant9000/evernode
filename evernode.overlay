@@ -109,13 +109,16 @@
 
 &mspi0 {
     pinctrl-0 = <&mspi0_default>;
-    pinctrl-names = "default";
+    pinctrl-1 = <&mspi0_sleep>;
+    pinctrl-names = "default", "sleep";
     clock-frequency = <DT_FREQ_M(8)>;
     status = "okay";
     ce-gpios = <&gpio0_31 19 GPIO_ACTIVE_LOW>;
+    cmdq-buffer-location = ".mspi_buff";
+    cmdq-buffer-size = <256>;
 
     ext_flash: nor-mspi-flash@0 {
-        compatible = "jedec,nor-mspi", "jedec,nor";
+        compatible = "jedec,nor";
         reg = <0>;
         size = <DT_SIZE_M(8)>; /* in Mbits */
         status = "okay";
