@@ -8,7 +8,7 @@
 # TODO:
 # - Improve modem_is_receiving_packet() if possible at all with the SX1262.
 
-from machine import Pin, SoftSPI
+from machine import Pin, SoftSPI, SPI
 from micropython import const
 import time, struct, urandom
 
@@ -74,7 +74,7 @@ POAPreamble = const(0)
 POAHeader = const(1)
 
 class SX1262:
-    def __init__(self, pinset, rx_callback, tx_callback = None):
+    def __init__(self, pinset, rx_callback, tx_callback = None, spi = None):
         self.receiving = False # True if we are in receive mode.
         self.tx_in_progress = False
         self.packet_on_air = False # see modem_is_receiving_packet().
@@ -84,13 +84,16 @@ class SX1262:
         self.busy_pin = Pin(pinset['busy'],Pin.IN)
         self.reset_pin = Pin(pinset['reset'],Pin.OUT)
         self.chipselect_pin = Pin(pinset['chipselect'], Pin.OUT)
-        self.clock_pin = Pin(pinset['clock'])
-        self.mosi_pin = Pin(pinset['mosi'])
-        self.miso_pin = Pin(pinset['miso'])
+        if spi:
+            self.spi = spi
+        else:
+            self.clock_pin = Pin(pinset['clock'])
+            self.mosi_pin = Pin(pinset['mosi'])
+            self.miso_pin = Pin(pinset['miso'])
+            self.spi = SoftSPI(baudrate=10000000, polarity=0, phase=0, sck=self.clock_pin, mosi=self.mosi_pin, miso=self.miso_pin)
         self.dio_pin = Pin(pinset['dio'], Pin.IN)
-        self.spi = SoftSPI(baudrate=10000000, polarity=0, phase=0, sck=self.clock_pin, mosi=self.mosi_pin, miso=self.miso_pin)
         self.bw = 0 # Currently set bandwidth. Saved to compute freq error.
-         
+
     def reset(self):
         self.reset_pin.off()
         time.sleep_us(500)
