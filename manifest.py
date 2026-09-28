@@ -1,7 +1,7 @@
 freeze("$(PORT_DIR)/modules")
 include("$(MPY_DIR)/extmod/asyncio")
 require("upysh")
-require("aioble")
+#require("aioble")
 require("aiorepl")
 require("lora-async")
 require("lora-sx126x")
