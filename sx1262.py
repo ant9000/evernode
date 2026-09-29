@@ -115,7 +115,7 @@ class SX1262:
 
     # Send a read or write command, and return the reply we
     # got back. 'data' can be both an array of a single integer.
-    def command(self, opcode, data=None): 
+    def command(self, opcode, data=None):
         if data != None:
             if isinstance(data,int): data = [data]
             payload = bytearray(1+len(data)) # opcode + payload
@@ -267,7 +267,7 @@ class SX1262:
         # of FIFO available by setting both recv and send FIFO address
         # to the base.
         self.command(SetBufferBaseAddressCmd,[0,0])
-       
+
         # Setup the IRQ handler to receive the packet tx/rx and
         # other events. Note that the chip will put the packet
         # on the FIFO even on CRC error.
@@ -313,7 +313,7 @@ class SX1262:
     def receive(self):
         self.command(SetRxCmd,[0xff,0xff,0xff])
         self.receiving = True
-    
+
     def get_irq(self):
         reply = self.command(GetIrqStatusCmd,[0,0,0])
         return (reply[2]<<8) | reply[3]
@@ -369,7 +369,7 @@ class SX1262:
             # we will take this condition for a bit longer.
             self.packet_on_air = time.ticks_ms()
             self.packet_on_air_type = POAHeader
-        else: 
+        else:
             print("SX1262: not handled event IRQ flags "+bin(event))
 
     def get_instantaneous_rss(self):
@@ -398,7 +398,7 @@ class SX1262:
 
     # Send the specified packet immediately. Will raise the interrupt
     # when finished.
-    def send(self, data): 
+    def send(self, data):
         self.tx_in_progress = True
         self.set_packet_params(payload_len = len(data))
         self.writebuf(0x00,data)
