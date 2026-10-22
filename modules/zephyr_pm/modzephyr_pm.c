@@ -6,9 +6,8 @@
 #include <zephyr/pm/device_runtime.h>
 #include "zephyr_device.h"
 
-static mp_obj_t zephyr_pm_pm_toggle(mp_obj_t name) {
+static mp_obj_t zephyr_pm_pm_suspend(mp_obj_t name) {
     const struct device *dev = zephyr_device_find(name);
-    enum pm_device_state pm_state;
     int retval;
 
     if (dev == NULL) {
@@ -16,22 +15,31 @@ static mp_obj_t zephyr_pm_pm_toggle(mp_obj_t name) {
         return mp_obj_new_int(-ENODEV);
     }
 
-    if (!pm_device_runtime_is_enabled(dev)) {
-        mp_raise_ValueError(MP_ERROR_TEXT("device does not have runtime power management"));
-        return mp_obj_new_int(-ENOTSUP);
-    }
-
-    (void)pm_device_state_get(dev, &pm_state);
-
-    if (pm_state == PM_DEVICE_STATE_ACTIVE) {
-        retval = pm_device_runtime_put(dev);
+    bool busy = pm_device_is_busy(dev);
+    if (!busy) {
+        retval = pm_device_action_run(dev, PM_DEVICE_ACTION_SUSPEND);
     } else {
-        retval = pm_device_runtime_get(dev);
+        retval = -EBUSY;
     }
 
     return mp_obj_new_int(retval);
 }
-static MP_DEFINE_CONST_FUN_OBJ_1(zephyr_pm_pm_toggle_obj, zephyr_pm_pm_toggle);
+static MP_DEFINE_CONST_FUN_OBJ_1(zephyr_pm_pm_suspend_obj, zephyr_pm_pm_suspend);
+
+static mp_obj_t zephyr_pm_pm_resume(mp_obj_t name) {
+    const struct device *dev = zephyr_device_find(name);
+    int retval;
+
+    if (dev == NULL) {
+        mp_raise_ValueError(MP_ERROR_TEXT("unknown device"));
+        return mp_obj_new_int(-ENODEV);
+    }
+
+    retval = pm_device_action_run(dev, PM_DEVICE_ACTION_RESUME);
+
+    return mp_obj_new_int(retval);
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(zephyr_pm_pm_resume_obj, zephyr_pm_pm_resume);
 
 static mp_obj_t zephyr_pm_pm_busy_set(mp_obj_t name) {
     const struct device *dev = zephyr_device_find(name);
@@ -75,7 +83,8 @@ static MP_DEFINE_CONST_FUN_OBJ_1(zephyr_pm_pm_is_busy_obj, zephyr_pm_pm_is_busy)
 
 static const mp_rom_map_elem_t zephyr_pm_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_zephyr_pm) },
-    { MP_ROM_QSTR(MP_QSTR_pm_toggle), MP_ROM_PTR(&zephyr_pm_pm_toggle_obj) },
+    { MP_ROM_QSTR(MP_QSTR_pm_suspend), MP_ROM_PTR(&zephyr_pm_pm_suspend_obj) },
+    { MP_ROM_QSTR(MP_QSTR_pm_resume), MP_ROM_PTR(&zephyr_pm_pm_resume_obj) },
     { MP_ROM_QSTR(MP_QSTR_pm_busy_set), MP_ROM_PTR(&zephyr_pm_pm_busy_set_obj) },
     { MP_ROM_QSTR(MP_QSTR_pm_busy_clear), MP_ROM_PTR(&zephyr_pm_pm_busy_clear_obj) },
     { MP_ROM_QSTR(MP_QSTR_pm_is_busy), MP_ROM_PTR(&zephyr_pm_pm_is_busy_obj) },
