@@ -2,6 +2,7 @@
 # MIT license; Copyright (c) 2023 Angus Gratton
 import asyncio
 from machine import Pin, SPI
+import zephyr_pm, time
 
 pinset = {
         'busy':       Pin(("gpio0_31", 16)),
@@ -9,7 +10,15 @@ pinset = {
         'chipselect': Pin(("gpio0_31", 11)),
         'dio':        Pin(("gpio0_31", 15)),
 }
+
+pm_resume("spi1")
 spi = SPI("spi1", baudrate=10_000_000, polarity=0, phase=0)
+
+radio_power = Pin(("gpio32_63", 14), Pin.OUT)
+radio_power.off()
+rf_switch = Pin(("gpio0_31", 18), Pin.OUT)
+rf_switch.on()
+time.sleep(.2)
 
 lora_cfg = {
    "freq_khz": 868300,
@@ -32,6 +41,7 @@ def get_async_modem():
         dio3_tcxo_millivolts=1800,
     )
 
+
 async def main_task():
     modem = get_async_modem()
     await asyncio.gather(
@@ -51,10 +61,25 @@ async def recv_coro(modem):
 async def send_coro(modem):
     counter = 0
     while True:
-        print("Sending...")
-        await modem.send(f"Hello world from async MicroPython #{counter}".encode())
+        tx = f"PING: Hello world from async MicroPython #{counter}"
+        print(f"Sending...{tx}")
+        await modem.send(tx.encode())
         print("Sent!")
         await asyncio.sleep(5)
         counter += 1
 
-asyncio.run(main_task())
+try:
+    asyncio.run(main_task())
+except KeyboardInterrupt:
+    pass
+
+print("radio power = 1")
+radio_power.on()
+print("rf switch = 0")
+rf_switch.off()
+print("pm_busy_clear spi1")
+pm_busy_clear("spi1")
+pm_suspend("spi1")
+for key in pinset:
+    print(f"{key} = 0")
+    pinset[key].init(0)

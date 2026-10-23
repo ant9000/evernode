@@ -1,6 +1,7 @@
 / {
     chosen {
         zephyr,entropy = &rng_hci;
+        zephyr,code-partition = &slot0_partition;
     };
 
     aliases {
@@ -96,23 +97,30 @@
     };
 };
 
-/delete-node/ &slot0_partition;
-/delete-node/ &slot1_partition;
-/delete-node/ &storage_partition;
+
 
 &flash0 {
+    /delete-node/ partitions;
     partitions {
-        compatible = "fixed-partitions";
+        ranges;
         #address-cells = <1>;
         #size-cells = <1>;
 
-        slot0_partition: partition@18000 {
-            label = "image-0";
-            reg = <0x00018000 0x70000>;
+        internal_boot_partition: partition@0 {
+            compatible = "zephyr,mapped-partition";
+            label = "internal_bootloader";
+            reg = <0x00000000 0xc000>;
         };
-        storage_partition: partition@88000 {
+
+        slot0_partition: partition@0c000 {
+            compatible = "zephyr,mapped-partition";
+            label = "image-0";
+            reg = <0x0000c000 0xa0000>;
+        };
+        storage_partition: partition@ac000 {
+            compatible = "zephyr,mapped-partition";
             label = "storage";
-            reg = <0x00088000 0x78000>;
+            reg = <0x000ac000 0x54000>;
         };
     };
 };
