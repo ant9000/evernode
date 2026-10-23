@@ -129,10 +129,33 @@
 /delete-node/ &{/buttons};
 /delete-node/ &{/pwmleds};
 
-&gpio32_63 {
-  line-hogs {
+&gpio0_31 {
+  radio-nss {
     gpio-hog;
-    gpios = <10 GPIO_ACTIVE_HIGH>, <15 GPIO_ACTIVE_HIGH>;
+    gpios = <11 GPIO_ACTIVE_LOW>;
+    output-high;
+  };
+  radio-nreset {
+    gpio-hog;
+    gpios = <17 GPIO_ACTIVE_LOW>;
+    output-high;
+  };
+  rf-switch-power {
+    gpio-hog;
+    gpios = <18 GPIO_ACTIVE_HIGH>;
+    output-low;
+  };
+};
+
+&gpio32_63 {
+  radio-npower {
+    gpio-hog;
+    gpios = <14 GPIO_ACTIVE_LOW>;
+    output-low;
+  };
+  adc-enable {
+    gpio-hog;
+    gpios = <15 GPIO_ACTIVE_HIGH>;
     output-low;
   };
 };
