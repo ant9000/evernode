@@ -55,11 +55,11 @@ async def main_task():
     while not modem.is_idle():
         await asyncio.sleep(.1)
     modem._cmd("BB", 0x96, 0x01)
-    rx_period = [0, 0, 128]  # 2 ms -> 128
-    sleep_period = [1,0,115] # 1.8 ms -> 115
-    modem._cmd("B3B3B", 0x94, *rx_period, *sleep_period)
+#    rx_period = [0, 0, 128]  # 2 ms -> 128
+#    sleep_period = [1,0,115] # 1.8 ms -> 115
+#    modem._cmd("B3B3B", 0x94, *rx_period, *sleep_period)
     await asyncio.gather(
-#        asyncio.create_task(send_coro(modem)),
+        asyncio.create_task(send_coro(modem)),
         asyncio.create_task(recv_coro(modem)),
     )
 
@@ -90,8 +90,6 @@ except KeyboardInterrupt:
 
 print("modem sleep")
 modem.sleep()
-time.sleep(5)
-
 print("radio power = 1")
 radio_power.on()
 print("pm_busy_clear spi1")

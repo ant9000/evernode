@@ -1,3 +1,5 @@
+import machine
+
 def decode_padreg(value):
     pull       = value & 1
     inp_enable = (value & (1 << 1)) >> 1
