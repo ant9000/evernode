@@ -25,6 +25,13 @@ source ~/zephyrproject/.venv/bin/activate
 ./build.sh
 ```
 
+Two snippets are available: `bt` and `mspi` (the latter is still WIP). To
+enable Bluetooth, for instnace, you can build the firmware with
+
+```
+./build.sh -S bt
+```
+
 The provided `west.sh` script is a thin wrapper for Zephyr `west` command, to simplify handling.
 For instance, to flash the board you can issue:
 

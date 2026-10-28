@@ -1,0 +1,14 @@
+/ {
+    chosen {
+        zephyr,entropy = &rng_hci;
+    };
+
+    rng_hci: entropy_bt_hci {
+        compatible = "zephyr,bt-hci-entropy";
+        status = "okay";
+    };
+};
+
+&bleif {
+    status = "okay";
+};

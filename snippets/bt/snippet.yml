@@ -1,0 +1,4 @@
+name: bt
+append:
+  EXTRA_DTC_OVERLAY_FILE: bt.overlay
+  EXTRA_CONF_FILE: bt.conf

@@ -1,0 +1,4 @@
+name: mspi
+append:
+  EXTRA_DTC_OVERLAY_FILE: mspi.overlay
+  EXTRA_CONF_FILE: mspi.conf

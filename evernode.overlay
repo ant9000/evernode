@@ -1,11 +1,11 @@
 / {
     chosen {
-        zephyr,entropy = &rng_hci;
         zephyr,code-partition = &slot0_partition;
     };
 
     aliases {
         i2c0 = &i2c5;
+        i2c1 = &i2c3;
 		/delete-property/ led0;
 		/delete-property/ led1;
 		/delete-property/ led2;
@@ -33,11 +33,6 @@
     zephyr,user {
         io-channels = <&adc0 6>, <&adc0 7>;
     };
-
-    rng_hci: entropy_bt_hci {
-        compatible = "zephyr,bt-hci-entropy";
-        status = "okay";
-    };
 };
 
 &pinctrl {
@@ -46,32 +41,15 @@
             pinmux = <M5SCL_P48>, <M5SDAWIR3_P49>;
         };
     };
+    i2c3_sleep: i2c3_sleep {
+        group1 {
+            pinmux = <M3SCL_P42>, <M3SDAWIR3_P43>;
+        };
+    };
     adc0_default: adc0_default {
         group1 {
             pinmux = <ADCSE6_P34>, <ADCSE7_P35>, <ADCD0PSE8_P13>;
             drive-strength = "0.1";
-        };
-    };
-    mspi0_nor: mspi0_nor {
-        group1 {
-            pinmux = <MSPI0_0_P22>,
-                 <MSPI0_1_P26>,
-                 <MSPI0_2_P4>,
-                 <MSPI0_3_P23>;
-        };
-        group2 {
-            pinmux = <MSPI0_8_P24>;
-            drive-strength = "1.0";
-            ambiq,iom-mspi = <0>;
-            ambiq,iom-num = <0>;
-        };
-        group3 {
-            pinmux = <NCE19_P19>;
-            drive-push-pull;
-            drive-strength = "0.5";
-            ambiq,iom-mspi = <0>;
-            ambiq,nce-src = <0>;
-            ambiq,iom-num = <0>;
         };
     };
 };
@@ -97,7 +75,21 @@
     };
 };
 
-
+&i2c3 {
+    pinctrl-1 = <&i2c3_sleep>;
+    pinctrl-names = "default", "sleep";
+    status = "okay";
+    lis2dw12: lis2dw12@19 {
+        compatible = "st,lis2dw12";
+        reg = <0x19>;
+    };
+/*
+    hdc3020: hdc3020@44 {
+        compatible = "ti,hdc302x";
+        reg = <0x44>;
+    };
+*/
+};
 
 &flash0 {
     /delete-node/ partitions;
@@ -112,7 +104,7 @@
             reg = <0x00000000 0xc000>;
         };
 
-        slot0_partition: partition@0c000 {
+        slot0_partition: partition@c000 {
             compatible = "zephyr,mapped-partition";
             label = "image-0";
             reg = <0x0000c000 0xa0000>;
@@ -160,52 +152,6 @@
   };
 };
 
-&mspi0 {
-    pinctrl-0 = <&mspi0_default>;
-    pinctrl-1 = <&mspi0_sleep>;
-    pinctrl-2 = <&mspi0_nor>;
-    pinctrl-names = "default", "sleep", "nor";
-    status = "okay";
-
-    ce-gpios = <&gpio0_31 19 GPIO_ACTIVE_LOW>;
-
-    cmdq-buffer-location = ".mspi_buff";
-    cmdq-buffer-size = <256>;
-
-    nor: nor@0 {
-        compatible = "ambiq,mspi-device", "is25xX0xx";
-        size = <DT_SIZE_M(8)>;
-        reg = <0>;
-        status = "okay";
-        mspi-max-frequency = <8000000>;
-        mspi-io-mode = "MSPI_IO_MODE_SINGLE";
-        mspi-data-rate = "MSPI_DATA_RATE_SINGLE";
-        mspi-dqs-enable;
-        mspi-hardware-ce-num = <0>;
-        read-command = <0xcc>;
-        write-command = <0x8e>;
-        command-length = "INSTR_1_BYTE";
-        address-length = "ADDR_4_BYTE"; /* Avoid use of 3 byte address if Ambiq MSPI */
-        rx-dummy = <16>;
-        tx-dummy = <0>;
-        ce-break-config = <0 0>;
-        ambiq,timing-config-mask = <0x62>;
-        ambiq,timing-config = <0 16 1 0 0 5 20>;
-
-        partitions {
-            compatible = "fixed-partitions";
-            #address-cells = <1>;
-            #size-cells = <1>;
-
-            store_partition: partition@0 {
-                label = "store";
-                reg = <0x00000000 DT_SIZE_M(8)>;
-            };
-        };
-    };
-};
-
-
 &adc0 {
 	#address-cells = <1>;
 	#size-cells = <0>;
@@ -240,10 +186,12 @@
 &uart0_default {
     group1 {
         pinmux = <UART0TX_P39>;
+        bias-pull-up;
     };
 
     group2 {
         pinmux = <UART0RX_P40>;
         input-enable;
+        bias-pull-up;
     };
 };

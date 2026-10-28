@@ -20,10 +20,12 @@ EXTRA_CFLAGS="$EXTRA_CFLAGS -DMICROPY_EMIT_THUMB=1"
 
 west build -b apollo3_evb \
     -d "$TARGET" \
+    -S nobt \
     --extra-conf "$BASE/evernode.conf" \
     --extra-conf "$BASE/micropython.conf" \
     --extra-dtc-overlay "$BASE/evernode.overlay" \
     "$BASE/micropython/ports/zephyr/" \
+    -DSNIPPET_ROOT="$BASE" \
     -DUSER_C_MODULES="${BASE}/modules/" \
     -DEXTRA_CFLAGS="$EXTRA_CFLAGS" \
     $*

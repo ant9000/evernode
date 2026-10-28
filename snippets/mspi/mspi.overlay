@@ -1,0 +1,68 @@
+&pinctrl {
+    mspi0_nor: mspi0_nor {
+        group1 {
+            pinmux = <MSPI0_0_P22>,
+                 <MSPI0_1_P26>,
+                 <MSPI0_2_P4>,
+                 <MSPI0_3_P23>;
+        };
+        group2 {
+            pinmux = <MSPI0_8_P24>;
+            drive-strength = "1.0";
+            ambiq,iom-mspi = <0>;
+            ambiq,iom-num = <0>;
+        };
+        group3 {
+            pinmux = <NCE19_P19>;
+            drive-push-pull;
+            drive-strength = "0.5";
+            ambiq,iom-mspi = <0>;
+            ambiq,nce-src = <0>;
+            ambiq,iom-num = <0>;
+        };
+    };
+};
+
+&mspi0 {
+    pinctrl-0 = <&mspi0_default>;
+    pinctrl-1 = <&mspi0_sleep>;
+    pinctrl-2 = <&mspi0_nor>;
+    pinctrl-names = "default", "sleep", "nor";
+    status = "okay";
+
+    ce-gpios = <&gpio0_31 19 GPIO_ACTIVE_LOW>;
+
+    cmdq-buffer-location = ".mspi_buff";
+    cmdq-buffer-size = <256>;
+
+    nor: nor@0 {
+        compatible = "ambiq,mspi-device", "is25xX0xx";
+        size = <DT_SIZE_M(8)>;
+        reg = <0>;
+        status = "okay";
+        mspi-max-frequency = <8000000>;
+        mspi-io-mode = "MSPI_IO_MODE_SINGLE";
+        mspi-data-rate = "MSPI_DATA_RATE_SINGLE";
+        mspi-dqs-enable;
+        mspi-hardware-ce-num = <0>;
+        read-command = <0xcc>;
+        write-command = <0x8e>;
+        command-length = "INSTR_1_BYTE";
+        address-length = "ADDR_4_BYTE"; /* Avoid use of 3 byte address if Ambiq MSPI */
+        rx-dummy = <16>;
+        tx-dummy = <0>;
+        ce-break-config = <0 0>;
+        ambiq,timing-config-mask = <0x62>;
+        ambiq,timing-config = <0 16 1 0 0 5 20>;
+
+        partitions {
+            #address-cells = <1>;
+            #size-cells = <1>;
+
+            store_partition: partition@0 {
+                label = "store";
+                reg = <0x00000000 DT_SIZE_M(8)>;
+            };
+        };
+    };
+};
