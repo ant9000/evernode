@@ -1,5 +1,5 @@
 import asyncio
-from machine import lightsleep
+from machine import Pin, lightsleep
 from lis2dw12 import Lis2dw12
 from radio import Radio
 
@@ -12,7 +12,7 @@ modem = Radio({
    "output_power": -9,  # dBm
 })
 
-accel = Lis2dw12("i2c3", 0x19, ("gpio0_31", 4))
+accel = Lis2dw12("i2c3", 0x19, Pin(("gpio0_31", 0), Pin.IN, Pin.PULL_UP))
 
 tap = None
 def on_tap(tap_type):
@@ -45,7 +45,9 @@ async def main():
                 print("Sent.")
             tap = None
         modem.sleep()
+        modem.pinset["busy"].init(0)
         lightsleep(60_000)
+        modem.pinset["busy"].init(Pin.IN)
 
 try:
     asyncio.run(main())
