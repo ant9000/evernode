@@ -38,12 +38,12 @@
 &pinctrl {
     i2c5_sleep: i2c5_sleep {
         group1 {
-            pinmux = <M5SCL_P48>, <M5SDAWIR3_P49>;
+            pinmux = <GPIO_P48>, <GPIO_P49>;
         };
     };
     i2c3_sleep: i2c3_sleep {
         group1 {
-            pinmux = <M3SCL_P42>, <M3SDAWIR3_P43>;
+            pinmux = <GPIO_P42>, <GPIO_P43>;
         };
     };
     adc0_default: adc0_default {
