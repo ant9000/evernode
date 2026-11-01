@@ -2,7 +2,7 @@
 Clone this repo first:
 
 ```
-git clone https://github.com/ant9000/evernode
+git clone --recurse-submodules https://github.com/ant9000/evernode
 cd evernode
 ```
 
