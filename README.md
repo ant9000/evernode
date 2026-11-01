@@ -1,15 +1,9 @@
+# INSTALLATION #
 Clone this repo first:
 
 ```
 git clone https://github.com/ant9000/evernode
 cd evernode
-```
-
-Define `BASE` as current dir and `DEVICE` as the correct serial port:
-
-```
-BASE=`pwd`
-DEVICE=/dev/ttyUSB0
 ```
 
 Clone Micropython repo:
@@ -18,15 +12,43 @@ Clone Micropython repo:
 git clone --recurse-submodules https://github.com/ant9000/micropython --branch=devel
 ```
 
-Activate Zephyr environment and compile:
+Install the Zephyr framework, following the [official guide](https://docs.zephyrproject.org/latest/develop/getting_started/index.html). Assuming the default paths of the guide, add a new remote and update:
+
+```
+cd ~/zephyrproject/zephyr
+# add my remote
+git remote add ant9000 https://github.com/ant9000/zephyr
+git pull --all
+# switch to my devel branch
+git checkout -b devel --track ant9000/devel
+# bring the framework up to date
+source ~/zephyrproject/.venv/bin/activate
+west update
+west packages pip --install
+west sdk install -b ~/zephyrproject/
+```
+
+# COMPILATION AND FLASHING #
+
+Remember that Zephyr framework needs to be active when compiling or flashing:
 
 ```
 source ~/zephyrproject/.venv/bin/activate
+```
+
+Compiling the firmware is handled by `build.sh` script:
+
+```
 ./build.sh
 ```
 
+For a clean compilation:
+```
+./build.sh --pristine
+```
+
 Two snippets are available: `bt` and `mspi` (the latter is still WIP). To
-enable Bluetooth, for instnace, you can build the firmware with
+enable Bluetooth, for instance, you can build the firmware with
 
 ```
 ./build.sh -S bt
@@ -45,22 +67,31 @@ or maybe
 ./west.sh flash --no-rebuild --erase
 ```
 
-Same goes for other `west` subcommands: to debug, use
+Same goes for other `west` subcommands: for debugging, you would use
 
 ```
 ./west.sh debug
 ```
 
-etc.
+and so on.
 
-To copy the radio driver to the Evernode:
+# COPYING FILES #
+
+Define `BASE` as current dir and `DEVICE` as the correct serial port:
+
 ```
-$BASE/micropython/tools/pyboard.py --device $DEVICE -f cp $BASE/sx1262.py :/flash/sx1262.py
+BASE=`pwd`
+DEVICE=/dev/ttyUSB0
 ```
 
-To launch the radio test script on the Evernode:
+To copy the base drivers to the Evernode:
 ```
-$BASE/micropython/tools/pyboard.py --device $DEVICE $BASE/test_radio.py
+$BASE/micropython/tools/mpremote/mpremote.py $DEVICE fs cp -r firmware/* :
+```
+
+To launch a test script on the Evernode:
+```
+$BASE/micropython/tools/mpremote/mpremote.py $DEVICE run tests/test_radio_async.py
 ```
 
 If you get the error `ModuleNotFoundError: No module named 'serial'`, then install pyserial with
