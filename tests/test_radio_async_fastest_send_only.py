@@ -4,7 +4,7 @@ from machine import lightsleep
 
 lora_cfg = {
    "freq_khz": 868300,
-   "sf": 5,
+   "sf": 6,
    "bw": "500",  # kHz
    "coding_rate": 5,
    "preamble_len": 12,
