@@ -55,8 +55,17 @@ class Radio(AsyncSX1262):
         # use DC-DC instead of LDO
         self._cmd("BB", 0x96, 0x01)
 
-    def __del__(self):
-        self.sleep()
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.off()
+
+    def off(self):
+        try:
+            self.sleep()
+        except:
+            pass
         zephyr_pm.pm_busy_clear("spi1")
         zephyr_pm.pm_suspend("spi1")
         for key in self.pinset:
