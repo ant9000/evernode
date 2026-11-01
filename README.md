@@ -86,12 +86,12 @@ DEVICE=/dev/ttyUSB0
 
 To copy the base drivers to the Evernode:
 ```
-$BASE/micropython/tools/mpremote/mpremote.py $DEVICE fs cp -r firmware/* :
+$BASE/micropython/tools/mpremote/mpremote.py connect $DEVICE fs cp -r firmware/* :
 ```
 
 To launch a test script on the Evernode:
 ```
-$BASE/micropython/tools/mpremote/mpremote.py $DEVICE run tests/test_radio_async.py
+$BASE/micropython/tools/mpremote/mpremote.py connect $DEVICE run tests/test_radio_async.py
 ```
 
 If you get the error `ModuleNotFoundError: No module named 'serial'`, then install pyserial with
