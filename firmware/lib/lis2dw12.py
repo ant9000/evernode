@@ -74,8 +74,8 @@ class Lis2dw12:
         self.write(0x32, bytes([self.read(0x32, 1)[0] | 0b1110_0000]))
         # configure double tap
         self.write(0x33, b'\xff')
-        # enable wake up on taps and sleep mode
-        self.write(0x34, b'\xc0')
+        # enable wake up on taps and sleep mode, wakeup threshold 0.5 FS
+        self.write(0x34, b'\xd0')
         # wake up duration
         self.write(0x35, b'\x00')
         # enable interrupts
