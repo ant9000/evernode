@@ -3,11 +3,11 @@ from radio import Radio
 
 lora_cfg = {
    "freq_khz": 868300,
-   "sf": 7,
-   "bw": "125",  # kHz
+   "sf": 5,
+   "bw": "500",  # kHz
    "coding_rate": 5,
    "preamble_len": 12,
-   "output_power": 14,  # dBm
+   "output_power": -9,  # dBm
 }
 
 with Radio(lora_cfg) as modem:
