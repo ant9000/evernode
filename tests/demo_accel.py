@@ -5,7 +5,7 @@ from radio import Radio
 
 lora_cfg = {
    "freq_khz": 868300,
-   "sf": 6,
+   "sf": 5,
    "bw": "500",  # kHz
    "coding_rate": 5,
    "preamble_len": 12,
