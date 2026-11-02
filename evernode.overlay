@@ -36,6 +36,12 @@
 };
 
 &pinctrl {
+	spi1_sleep: spi1_sleep {
+		group1 {
+			pinmux = <GPIO_P8>, <GPIO_P9>, <GPIO_P10>;
+		};
+	};
+
     i2c5_sleep: i2c5_sleep {
         group1 {
             pinmux = <GPIO_P48>, <GPIO_P49>;
@@ -48,7 +54,7 @@
     };
     adc0_default: adc0_default {
         group1 {
-            pinmux = <ADCSE6_P34>, <ADCSE7_P35>, <ADCD0PSE8_P13>;
+            pinmux = <ADCSE6_P34>, <ADCSE7_P35>;
             drive-strength = "0.1";
         };
     };
@@ -57,7 +63,8 @@
 &iom1 {
     spi1: spi {
         pinctrl-0 = <&spi1_default>;
-        pinctrl-names = "default";
+        pinctrl-1 = <&spi1_sleep>;
+        pinctrl-names = "default", "sleep";
         clock-frequency = <DT_FREQ_M(10)>;
         status = "okay";
     };
@@ -158,14 +165,6 @@
     // ADCSE7: Vcap
     channel@7 {
         reg = <7>;
-        zephyr,gain = "ADC_GAIN_1";
-        zephyr,reference = "ADC_REF_INTERNAL";
-        zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
-        zephyr,resolution = <12>;
-    };
-    //ADCD0PSE8_P13: Vbatt
-    channel@8 {
-        reg = <8>;
         zephyr,gain = "ADC_GAIN_1";
         zephyr,reference = "ADC_REF_INTERNAL";
         zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
