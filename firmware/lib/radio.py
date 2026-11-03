@@ -41,7 +41,6 @@ class Radio(AsyncSX1262):
                     busy=pinset["busy"],
                     dio1=pinset["dio"],
                     reset=pinset["reset"],
-                    lora_cfg=lora_cfg,
                     dio3_tcxo_millivolts=1800,
                     dio3_tcxo_start_time_us=2000,
                     ant_sw=ant_sw,
@@ -54,6 +53,50 @@ class Radio(AsyncSX1262):
 
         # use DC-DC instead of LDO
         self._cmd("BB", 0x96, 0x01)
+        # set PA ramp value to 200 us
+        self._ramp_val = 0x04
+        self.configure(lora_cfg)
+
+    def _get_pa_tx_params(self, output_power, tx_ant):
+        # Given an output power level in dB, return a 2-tuple:
+        # - First item is the 3 arguments for SetPaConfig command
+        # - Second item is the power level argument value for SetTxParams command.
+        #
+        # DS 13.1.14.1 "PA Optimal Settings" gives optimally efficient
+        # values for output power +22, +20, +17, +14 dBm and "these changes make
+        # the use of nominal power either sub-optimal or unachievable" (hence it
+        # recommends setting +22dBm nominal TX Power for all these).
+        #
+        # However the modem supports output power as low as -9dBm, and there's
+        # no explanation in the datasheet of how to best set other output power
+        # levels.
+        #
+        # Semtech's own driver (sx126x.c in LoRaMac-node) only ever executes
+        # SetPaConfig with the values shown in the datasheet for +22dBm, and
+        # then executes SetTxParams with power set to the nominal value in
+        # dBm.
+        #
+        # If the caller requests an "Optimal" value, use the datasheet values.
+        # Otherwise use the nearest optimal choice.
+        output_power = min(max(int(output_power), -9), 22)
+
+        DEFAULT = (0x4, 0x7, 0x0, 0x1)
+        OPTIMAL = {
+            22: (DEFAULT, 22),
+            20: ((0x3, 0x5, 0x0, 0x1), 22),
+            17: ((0x2, 0x3, 0x0, 0x1), 22),
+            14: ((0x2, 0x2, 0x0, 0x1), 22),
+        }
+        if output_power in OPTIMAL:
+            # Datasheet optimal values
+            return OPTIMAL[output_power]
+        else:
+            pa_level = 22  # default
+            for level in sorted(OPTIMAL.keys()):
+                if output_power <= level:
+                    pa_level = level
+                    break
+            return (OPTIMAL[pa_level][0], output_power & 0xFF)
 
     def __enter__(self):
         return self
