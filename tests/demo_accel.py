@@ -1,6 +1,7 @@
-import asyncio
+import asyncio, json
 from machine import Pin, lightsleep
 from lis2dw12 import Lis2dw12
+from adc_lib import adc_read_values
 from radio import Radio
 
 lora_cfg = {
@@ -27,16 +28,16 @@ with Radio(lora_cfg) as modem:
         while True:
             if tap is not None and accel.ready():
                 print(f"TAP: {tap}")
-                tx = None
+                data = {}
                 if tap == 1:
-                    x, y, z = accel.xyz()
-                    tx = f'({x:.3f},{y:.3f},{z:.3f}) g'
+                    data['accel'] = '{:.3f},{:.3f},{:.3f}'.format(*accel.xyz())
                 elif tap == 2:
-                    t = accel.temp()
-                    tx = f'{t:.1f} °C'
+                    data['temp'] = '{:.1f}'.format(accel.temp())
                 else:
                     print("Unknown tap type {tap}")
-                if tx:
+                if data:
+                    data['Vpanel'], data['Vcap'] = [f"{v/1000:.3f}" for v in adc_read_values()]
+                    tx = json.dumps(data)
                     print(f"Sending: '{tx}'")
                     try:
                         modem.standby()

@@ -11,7 +11,7 @@ def adc_read_values():
 	Vcap = ADC(("adc0", 7))
 	numMeas = 50
 	myDelay = 0.0001
-	
+
 	try:
 		Vpanel_curr = 0
 		Vcap_curr = 0
@@ -22,7 +22,7 @@ def adc_read_values():
 			Vcap_curr += (Vcap.read_uv()-3000)     # offset compensation
 			time.sleep(myDelay)
 		time.sleep(0.1)
-			
+
 		Vpanel_val = Vpanel_curr/(numMeas*333) # linearity compensation
 		Vcap_val = Vcap_curr/(numMeas*333)     # linearity compensation
 		GPIO47.off()  # deactivate EN-IO
