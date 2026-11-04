@@ -1,0 +1,4 @@
+name: lora
+append:
+  EXTRA_DTC_OVERLAY_FILE: lora.overlay
+  EXTRA_CONF_FILE: lora.conf
