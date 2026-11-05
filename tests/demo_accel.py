@@ -30,13 +30,16 @@ with Radio(lora_cfg) as modem:
                 print(f"TAP: {tap}")
                 data = {}
                 if tap == 1:
-                    data['accel'] = '{:.3f},{:.3f},{:.3f}'.format(*accel.xyz())
+                    for k, v in zip("xyz", accel.xyz()):
+                        data[f'accel_{k}'] = f'{v:.3f}'
                 elif tap == 2:
-                    data['temp'] = '{:.1f}'.format(accel.temp())
+                    v = accel.temp()
+                    data['temp'] = f'{v:.1f}'
                 else:
                     print("Unknown tap type {tap}")
                 if data:
-                    data['Vpanel'], data['Vcap'] = [f"{v/1000:.3f}" for v in adc_read_values()]
+                    for k, v in zip(["panel", "cap"], adc_read_values()):
+                        data[f'v_{k}'] = f"{v/1000:.3f}"
                     tx = json.dumps(data)
                     print(f"Sending: '{tx}'")
                     try:
