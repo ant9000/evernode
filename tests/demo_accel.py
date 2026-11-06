@@ -26,29 +26,25 @@ with Radio(lora_cfg) as modem:
     async def main():
         global tap
         while True:
+            data = {
+                f'V{k}': f'{v/1000:.3f}' for k, v in zip(["panel", "cap"], adc_read_values())
+            }
             if tap is not None and accel.ready():
-                print(f"TAP: {tap}")
-                data = {}
                 if tap == 1:
-                    for k, v in zip("xyz", accel.xyz()):
-                        data[f'accel_{k}'] = f'{v:.3f}'
-                elif tap == 2:
-                    v = accel.temp()
-                    data['temp'] = f'{v:.1f}'
+                    data.update({
+                        f'a{k}': f'{v:.3f}' for k, v in zip("XYZ", accel.xyz())
+                    })
                 else:
-                    print("Unknown tap type {tap}")
-                if data:
-                    for k, v in zip(["panel", "cap"], adc_read_values()):
-                        data[f'v_{k}'] = f"{v/1000:.3f}"
-                    tx = json.dumps(data)
-                    print(f"Sending: '{tx}'")
-                    try:
-                        modem.standby()
-                    except:
-                        pass
-                    await modem.send(tx.encode())
-                    print("Sent.")
-                tap = None
+                    data['T'] = f'{accel.temp():.1f}'
+            tap = None
+            tx = json.dumps(data)
+            print(f"Sending: '{tx}'")
+            try:
+                modem.standby()
+            except:
+                pass
+            await modem.send(tx.encode())
+            print("Sent.")
             modem.sleep()
             modem.pinset["busy"].init(0)
             lightsleep(60_000)
