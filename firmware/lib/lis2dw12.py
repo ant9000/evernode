@@ -23,9 +23,13 @@ class Lis2dw12:
         return result
 
     def start(self):
+        # bw ODR/2, scale +/- 2g, low pass filter, low noise config disabled
+        self.write(0x25, b'\x00')
+        # ODR 50 Hz, low power, low power mode 1 (14 bits)
         self.write(0x20, b'\x41')
 
     def stop(self):
+        # power down
         self.write(0x20, b'\x00')
 
     def ready(self):
