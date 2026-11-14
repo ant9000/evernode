@@ -4,6 +4,7 @@ from machine import Pin, lightsleep, mem32
 from lis2dw12 import Lis2dw12
 from adc_lib import adc_read_values
 from radio import Radio
+from micropython import const
 
 lora_cfg = {
    "freq_khz": 868300,
@@ -20,7 +21,7 @@ def chip_id():
     return pack(">2L", id0, id1).hex()
 
 with Radio(lora_cfg) as modem:
-    accel = Lis2dw12("i2c3", 0x19, Pin(("gpio0_31", 0), Pin.IN, Pin.PULL_UP))
+    accel = Lis2dw12("i2c3", 0x19, Pin(("gpio0_31", 1), Pin.IN, Pin.PULL_UP))
     node = chip_id()
 
     tap = None

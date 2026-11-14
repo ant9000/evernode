@@ -32,5 +32,8 @@ if wake == None:
 else:
 	print(" boot.py with RTC")
 	rtc_restore()
+	xtCalibration = bus.readfrom_mem(ADDR, 0x14, 1)
+	print(f'  xtCalibration (reg 0x14): 0x{xtCalibration.hex()}')
+
 chip_id()
 powered_up()

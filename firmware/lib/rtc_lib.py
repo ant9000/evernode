@@ -13,8 +13,56 @@ AlarmSleep = True
 
 DEV = "i2c5"
 ADDR = 0x69
+STD_RAM_BASE = 0x40   # primo byte della Standard RAM
 
 bus = I2C(DEV)
+
+def write_std_ram(offset, value):
+    """
+    Scrive un byte nella Standard RAM.
+    offset: 0..63
+    value:  0..255
+    """
+    if not 0 <= offset <= 63:
+        raise ValueError("offset deve essere tra 0 e 63")
+    i2c.writeto_mem(ADDR, STD_RAM_BASE + offset, bytes([value & 0xFF]))
+
+def read_std_ram(offset):
+    """
+    Legge un byte dalla Standard RAM.
+    offset: 0..63
+    Ritorna: valore letto (0..255)
+    """
+    if not 0 <= offset <= 63:
+        raise ValueError("offset deve essere tra 0 e 63")
+    return i2c.readfrom_mem(ADDR, STD_RAM_BASE + offset, 1)[0]
+
+# --- Esempi d'uso ---
+#write_std_ram(0, 0xAB)          # scrive nel primo byte
+#write_std_ram(10, 0x55)         # scrive nel byte 10
+#write_std_ram(63, 0xFF)         # scrive nell'ultimo byte
+#print("Byte 0: ", hex(read_std_ram(0)))
+#print("Byte 10:", hex(read_std_ram(10)))
+#print("Byte 63:", hex(read_std_ram(63)))
+def write_std_ram_buf(offset, data):
+    """Scrive una sequenza di byte a partire da offset (0..63)"""
+    if not 0 <= offset <= 63:
+        raise ValueError("offset fuori range")
+    if offset + len(data) > 64:
+        raise ValueError("dati troppo lunghi")
+    i2c.writeto_mem(ADDR, STD_RAM_BASE + offset, data)
+
+def read_std_ram_buf(offset, length):
+    """Legge length byte a partire da offset"""
+    if not 0 <= offset <= 63:
+        raise ValueError("offset fuori range")
+    if offset + length > 64:
+        raise ValueError("lettura fuori range")
+    return i2c.readfrom_mem(ADDR, STD_RAM_BASE + offset, length)
+
+# Esempio
+#write_std_ram_buf(5, b"\x30\x31\x32")
+#print(read_std_ram_buf(5, 3))
 
 def rtc_restore():
     print("  RTC restore")
@@ -28,7 +76,6 @@ def rtc_restore():
         bus.writeto_mem(ADDR, 0x14, b'\x46')  # XT calibration
     except Exception as e:
         print("    ERROR rtc_lib rtc_restore() i2c error: ", e)
-
 
 def rtc_sleep(night, batint, bpol, alarm):
     try:
@@ -110,7 +157,6 @@ def rtc_sleep(night, batint, bpol, alarm):
         print(f"Error {tempo}")
     except Exception as e:
         print(f"    ERROR rtc_lib rtc_sleep() i2c error: ", e)
-
 
 def wake_reason():
     try:
@@ -561,7 +607,7 @@ def rtc_setAlarmDate(year, month, date, hour, minute, second):
 #    rtc_write_reg(REG_INT_MASK, int_mask | INT_MASK_AIE)
 
         set_write_enable(False)
-        print(f"Alarm successfully programmed for: 20{year:02d}-{month:02d}-{date:02d} {hour:02d}:{minute:02d}:{second:02d}")
+        print(f"Alarm successfully programmed for: {year:04d}-{month:02d}-{date:02d} {hour:02d}:{minute:02d}:{second:02d}")
     except Exception as e:
         print("    ERROR rtc_lib rtc_setAlarmDate() i2c error: ", e)
 
